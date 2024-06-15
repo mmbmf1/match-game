@@ -1,0 +1,21 @@
+{
+  "name": "match-game",
+  "version": "1.0.0",
+  "private": true,
+  "main": "index.js",
+  "repository": "https://github.com/mmbmf1/match-game.git",
+  "author": "mmbmf1",
+  "dependencies": {
+    "@supabase/supabase-js": "2.39.3",
+    "express": "4.18.2",
+    "htmx.org": "1.9.9",
+    "pug": "3.0.2"
+  },
+  "devDependencies": {
+    "@prettier/plugin-pug": "3.0.0",
+    "prettier": "3.1.0"
+  },
+  "scripts": {
+    "prettier": "prettier --write \"**/*.pug\" --plugin=\"@prettier/plugin-pug\""
+  }
+}

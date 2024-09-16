@@ -46,7 +46,11 @@ app.get('/api/board', (req, res) => {
 })
 
 function generateColorPairs(rows, cols) {
-  const numPairs = (rows * cols) / 2
+  const totalCards = rows * cols
+  const numPairs = totalCards / 2
+
+  // Ensure you have enough unique colors for the number of pairs
+  // later this could be just colors in a DB; i.e. select * from colors order by random() limit totalCards
   const colors = [
     '#FF5733',
     '#33FF57',
@@ -56,10 +60,26 @@ function generateColorPairs(rows, cols) {
     '#33FFF0',
     '#FF8C33',
     '#8C33FF',
+    '#FFC300',
+    '#DAF7A6',
+    '#FF6F61',
+    '#6B5B95',
+    '#88B04B',
+    '#F7D8BA',
+    '#B5E48F',
+    '#FF9B85',
   ]
+
+  if (numPairs > colors.length) {
+    throw new Error('Not enough unique colors for the board size')
+  }
+
+  // Select the required number of unique colors
   const selectedColors = colors.slice(0, numPairs)
+  // Create pairs of colors
   const colorPairs = [...selectedColors, ...selectedColors]
 
+  // Shuffle the color pairs
   for (let i = colorPairs.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1))
     ;[colorPairs[i], colorPairs[j]] = [colorPairs[j], colorPairs[i]]

@@ -12,11 +12,8 @@ app.get('/api', (req, res) => {
 })
 
 app.get('/api/board', (req, res) => {
-  // console.log('👀 🔍 ~ app.get ~ req:', req.query)
   const boardSize = req.query['board-size'] // Get board size from query string
   if (!boardSize) return res.send('Error getting board size')
-  // const board = pug.compileFile('views/board.pug')
-  // res.send('board is here')
   let rows, cols
 
   // Determine the number of rows and columns based on the board size
@@ -48,22 +45,12 @@ app.get('/api/card/:index', (req, res) => {
   const currentColor = req.query.color
   const colorActive = req.query.active === 'true' ? true : false
 
-  let displayColor = ''
-  if (!colorActive) displayColor = currentColor
-
-  res.send(`
-    <div class="card bg-gray-300 text-white flex items-center justify-center rounded-lg shadow-lg border border-gray-300 cursor-pointer"
-         style="background-color: ${displayColor}"
-         data-index="${index}"
-         data-color="${displayColor}"
-         hx-get="/api/card/${index}?color=${encodeURIComponent(
-           currentColor
-         )}&active=${!colorActive}"
-         hx-target="this"
-         hx-swap="outerHTML">
-      Card ${index + 1}
-    </div>
-  `)
+  // Render the card.pug view with dynamic values
+  res.render('card', {
+    index,
+    color: currentColor,
+    colorActive,
+  })
 })
 
 function generateColorPairs(rows, cols) {

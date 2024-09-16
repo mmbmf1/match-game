@@ -37,8 +37,35 @@ app.get('/api/board', (req, res) => {
       return res.status(400).send('Invalid board size selected')
   }
 
+  const colorPairs = generateColorPairs(rows, cols)
+
+  console.log('👀 🔍 ~ app.get ~ colorPairs:', colorPairs)
+
   // Render the Pug template with rows and cols
   res.render('board', { rows, cols })
 })
+
+function generateColorPairs(rows, cols) {
+  const numPairs = (rows * cols) / 2
+  const colors = [
+    '#FF5733',
+    '#33FF57',
+    '#3357FF',
+    '#FF33A1',
+    '#F0FF33',
+    '#33FFF0',
+    '#FF8C33',
+    '#8C33FF',
+  ]
+  const selectedColors = colors.slice(0, numPairs)
+  const colorPairs = [...selectedColors, ...selectedColors]
+
+  for (let i = colorPairs.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1))
+    ;[colorPairs[i], colorPairs[j]] = [colorPairs[j], colorPairs[i]]
+  }
+
+  return colorPairs
+}
 
 module.exports = app

@@ -9,8 +9,6 @@
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
   </head>
   <body>
-    <!-- hello world! -->
-
     <h1 class="text-3xl font-bold mb-4">Select Board Size</h1>
 
     <!-- Dropdown for selecting board size -->
@@ -19,7 +17,7 @@
         id="board-size"
         name="board-size"
         class="border border-gray-300 p-2"
-        hx-get="/board"
+        hx-get="/api/board"
         hx-target="#game-board"
         hx-trigger="change"
       >

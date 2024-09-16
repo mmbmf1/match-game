@@ -46,13 +46,19 @@ app.get('/api/board', (req, res) => {
 app.get('/api/card/:index', (req, res) => {
   const index = parseInt(req.params.index, 10)
   const currentColor = req.query.color
+  const colorActive = req.query.active === 'true' ? true : false
+
+  let displayColor = ''
+  if (!colorActive) displayColor = currentColor
 
   res.send(`
     <div class="card bg-gray-300 text-white flex items-center justify-center rounded-lg shadow-lg border border-gray-300 cursor-pointer"
-         style="background-color: ${currentColor ?? ''};"
+         style="background-color: ${displayColor}"
          data-index="${index}"
-         data-color="${currentColor ?? ''}"
-         hx-get="/api/card/${index}?color="
+         data-color="${displayColor}"
+         hx-get="/api/card/${index}?color=${encodeURIComponent(
+           currentColor
+         )}&active=${!colorActive}"
          hx-target="this"
          hx-swap="outerHTML">
       Card ${index + 1}

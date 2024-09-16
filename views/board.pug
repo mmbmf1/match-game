@@ -1,10 +1,14 @@
-// board.pug
 if rows > 0 && cols > 0
-  // Use a dynamic class to apply the correct grid layout
   .grid(class=`grid-cols-${cols} grid-rows-${rows} gap-4 h-screen w-screen p-4`)
-    each card in Array(rows * cols).fill().map((_, i) => i)
-      .card.bg-blue-500.text-white.flex.items-center.justify-center.rounded-lg.shadow-lg.border.border-gray-300
-        | Card #{ card + 1 }
+    each color, index in colorPairs
+      .card.bg-gray-300.text-white.flex.items-center.justify-center.rounded-lg.shadow-lg.border.border-gray-300.cursor-pointer(
+        data-index=index,
+        data-color=color,
+        hx-get=`/api/card/${index}?color=${encodeURIComponent(color)}`,
+        hx-target='this',
+        hx-swap='outerHTML'
+      )
+        | Card #{ index + 1 }
 else
   p.text-red-500
     | Please select a valid board size.

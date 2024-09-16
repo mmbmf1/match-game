@@ -38,11 +38,23 @@ app.get('/api/board', (req, res) => {
   }
 
   const colorPairs = generateColorPairs(rows, cols)
-
-  console.log('👀 🔍 ~ app.get ~ colorPairs:', colorPairs)
-
+  if (!colorPairs) return res.send('Error')
   // Render the Pug template with rows and cols
-  res.render('board', { rows, cols })
+  res.render('board', { rows, cols, colorPairs })
+})
+
+app.get('/api/card/:index', (req, res) => {
+  const index = parseInt(req.params.index, 10)
+  const color = req.query.color
+
+  if (!color) return res.status(400).send('No color provided')
+
+  res.send(`
+    <div class="card bg-gray-300 text-white flex items-center justify-center rounded-lg shadow-lg border border-gray-300 cursor-pointer"
+         style="background-color: ${color};">
+      Card ${index + 1}
+    </div>
+  `)
 })
 
 function generateColorPairs(rows, cols) {
@@ -71,7 +83,8 @@ function generateColorPairs(rows, cols) {
   ]
 
   if (numPairs > colors.length) {
-    throw new Error('Not enough unique colors for the board size')
+    console.log('Not enough unique colors for the board size')
+    return
   }
 
   // Select the required number of unique colors

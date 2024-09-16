@@ -45,13 +45,16 @@ app.get('/api/board', (req, res) => {
 
 app.get('/api/card/:index', (req, res) => {
   const index = parseInt(req.params.index, 10)
-  const color = req.query.color
-
-  if (!color) return res.status(400).send('No color provided')
+  const currentColor = req.query.color
 
   res.send(`
     <div class="card bg-gray-300 text-white flex items-center justify-center rounded-lg shadow-lg border border-gray-300 cursor-pointer"
-         style="background-color: ${color};">
+         style="background-color: ${currentColor ?? ''};"
+         data-index="${index}"
+         data-color="${currentColor ?? ''}"
+         hx-get="/api/card/${index}?color="
+         hx-target="this"
+         hx-swap="outerHTML">
       Card ${index + 1}
     </div>
   `)

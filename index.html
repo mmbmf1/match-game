@@ -9,6 +9,28 @@
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
   </head>
   <body>
-    hello world!
+    <h1 class="text-3xl font-bold mb-4">Select Board Size</h1>
+
+    <!-- Dropdown for selecting board size -->
+    <div class="mb-6">
+      <select
+        id="board-size"
+        name="board-size"
+        class="border border-gray-300 p-2"
+        hx-get="/api/board"
+        hx-target="#game-board"
+        hx-trigger="change"
+      >
+        <option value="">Select Board Size</option>
+        <option value="4x4">4x4</option>
+        <option value="6x6">6x6</option>
+        <option value="8x8">8x8</option>
+      </select>
+    </div>
+
+    <!-- Game board container -->
+    <div id="game-board" class="grid grid-cols-4 gap-4">
+      <!-- The cards will be rendered here -->
+    </div>
   </body>
 </html>

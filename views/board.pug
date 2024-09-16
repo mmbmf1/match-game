@@ -1,0 +1,9 @@
+// board.pug
+if rows > 0 && cols > 0
+  .grid.gap-4(style=`grid-template-columns: repeat(${cols}, minmax(0, 1fr));`)
+    each card in Array(rows * cols).fill().map((_, i) => i)
+      .card.bg-blue-500.text-white.flex.items-center.justify-center.h-16.w-16.rounded-lg
+        | Card #{ card + 1 }
+else
+  p.text-red-500
+    | Please select a valid board size.

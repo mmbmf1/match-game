@@ -1,22 +1,15 @@
-const express = require('express')
+import express from 'express'
+import { join } from 'path'
 const app = express()
-const path = require('path')
-const pug = require('pug')
 
-app.set('views', path.join(__dirname, '../views'))
+app.set('views', join(__dirname, '../views'))
 app.set('view engine', 'pug')
 
-app.get('/api', (req, res) => {
-  console.log('👀 🔍 ~ app.get ~ req:', req)
-  res.send('test')
-})
-
 app.get('/api/board', (req, res) => {
-  const boardSize = req.query['board-size'] // Get board size from query string
+  const boardSize = req.query['board-size']
   if (!boardSize) return res.send('Error getting board size')
   let rows, cols
 
-  // Determine the number of rows and columns based on the board size
   switch (boardSize) {
     case '4x4':
       rows = 4
@@ -35,8 +28,6 @@ app.get('/api/board', (req, res) => {
   }
 
   const colorPairs = generateColorPairs(rows, cols)
-  if (!colorPairs) return res.send('Error')
-  // Render the Pug template with rows and cols
   res.render('board', { rows, cols, colorPairs })
 })
 
@@ -45,7 +36,6 @@ app.get('/api/card/:index', (req, res) => {
   const currentColor = req.query.color
   const colorActive = req.query.active === 'true' ? true : false
 
-  // Render the card.pug view with dynamic values
   res.render('card', {
     index,
     color: currentColor,
@@ -57,7 +47,6 @@ function generateColorPairs(rows, cols) {
   const totalCards = rows * cols
   const numPairs = totalCards / 2
 
-  // Ensure you have enough unique colors for the number of pairs
   // later this could be just colors in a DB; i.e. select * from colors order by random() limit totalCards
   const colors = [
     '#FF5733',
@@ -76,25 +65,32 @@ function generateColorPairs(rows, cols) {
     '#F7D8BA',
     '#B5E48F',
     '#FF9B85',
+    '#E91E63',
+    '#00BCD4',
+    '#FFEB3B',
+    '#CDDC39',
+    '#673AB7',
+    '#FF5722',
+    '#4CAF50',
+    '#9C27B0',
+    '#3F51B5',
+    '#607D8B',
+    '#009688',
+    '#795548',
+    '#FFC107',
+    '#8BC34A',
+    '#F44336',
+    '#2196F3',
+    '#FF9800',
   ]
-
-  if (numPairs > colors.length) {
-    console.log('Not enough unique colors for the board size')
-    return
-  }
 
   // Select the required number of unique colors
   const selectedColors = colors.slice(0, numPairs)
+
   // Create pairs of colors
   const colorPairs = [...selectedColors, ...selectedColors]
 
-  // Shuffle the color pairs
-  for (let i = colorPairs.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1))
-    ;[colorPairs[i], colorPairs[j]] = [colorPairs[j], colorPairs[i]]
-  }
-
-  return colorPairs
+  return colorPairs.sort(() => Math.random() - 0.5)
 }
 
-module.exports = app
+export default app

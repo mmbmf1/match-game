@@ -1,17 +1,19 @@
 import express from 'express'
 import { join } from 'path'
 import { createClient } from '@supabase/supabase-js'
-import bodyParser from 'body-parser'
 
 const app = express()
 
 app.set('views', join(__dirname, '../views'))
 app.set('view engine', 'pug')
 
-// Use body-parser middleware
-app.use(bodyParser.json())
+// Use express.urlencoded() middleware
+// app.use(express.urlencoded({ extended: true }))
 
 app.post('/api/board', async (req, res) => {
+  console.log('Request Headers:', req.headers) // Log the request headers
+  console.log('Request Body:', req.body) // Log the request body
+
   const boardSize = req.body['board-size']
   if (!boardSize) return res.send('Error getting board size, no params')
   let rows, cols

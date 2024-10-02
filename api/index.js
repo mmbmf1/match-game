@@ -8,6 +8,11 @@ app.set('view engine', 'pug')
 
 app.use(express.json())
 
+app.post('/api/test-json', (req, res) => {
+  console.log('Test JSON route - req.body:', req.body)
+  res.json({ received: req.body })
+})
+
 app.post('/api/board', async (req, res) => {
   console.log('👀 🔍 ~ app.post ~ req.body:', req.body)
   console.log('👀 🔍 ~ app.post ~ req.query:', req.query)

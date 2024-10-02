@@ -1,12 +1,15 @@
 import express from 'express'
 import { join } from 'path'
-const app = express()
 import { createClient } from '@supabase/supabase-js'
+import bodyParser from 'body-parser'
+
+const app = express()
 
 app.set('views', join(__dirname, '../views'))
 app.set('view engine', 'pug')
 
-app.use(express.json())
+// Use body-parser middleware
+app.use(bodyParser.json())
 
 app.post('/api/board', async (req, res) => {
   const boardSize = req.body['board-size']

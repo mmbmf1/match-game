@@ -58,8 +58,8 @@ app.get('/api/card/:index', (req, res) => {
   const currentColor = req.query.color
   const colorActive = req.query.active === 'true' ? true : false
 
-  // const boardId = req.query.boardId
-  // console.log('👀 🔍 ~ app.get ~ boardId:', boardId)
+  const boardId = req.query.boardId
+  console.log('👀 🔍 ~ app.get ~ boardId:', boardId)
 
   // workflow for card flip
   // check the last turn for the passed boardId

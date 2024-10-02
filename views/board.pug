@@ -1,10 +1,8 @@
-// board.pug
 if rows > 0 && cols > 0
   .grid(class=`grid-cols-${cols} grid-rows-${rows} gap-4 h-screen w-screen p-4`)
     each color, index in colorPairs
-      // Render the card using the card.pug template
+      // render the card using the card.pug template
       include card.pug
-      - var cardData = { color: color, index: index, boardId: boardId }
 else
   p.text-red-500
     | Please select a valid board size.

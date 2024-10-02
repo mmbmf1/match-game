@@ -13,19 +13,22 @@
 
     <!-- Dropdown for selecting board size -->
     <div class="mb-6">
-      <select
-        id="board-size"
-        name="board-size"
-        class="border border-gray-300 p-2"
-        hx-get="/api/board"
+      <form
+        hx-post="/api/board"
         hx-target="#game-board"
-        hx-trigger="change"
+        hx-trigger="change from:#board-size"
       >
-        <option value="">Select Board Size</option>
-        <option value="4x4">4x4</option>
-        <option value="6x6">6x6</option>
-        <option value="8x8">8x8</option>
-      </select>
+        <select
+          id="board-size"
+          name="board-size"
+          class="border border-gray-300 p-2"
+        >
+          <option value="">Select Board Size</option>
+          <option value="4x4">4x4</option>
+          <option value="6x6">6x6</option>
+          <option value="8x8">8x8</option>
+        </select>
+      </form>
     </div>
 
     <!-- Game board container -->

@@ -1,13 +1,17 @@
 import express from 'express'
 import { join } from 'path'
+import { createClient } from '@supabase/supabase-js'
+
 const app = express()
 
 app.set('views', join(__dirname, '../views'))
 app.set('view engine', 'pug')
 
-app.get('/api/board', (req, res) => {
-  const boardSize = req.query['board-size']
-  if (!boardSize) return res.send('Error getting board size')
+app.use(express.urlencoded({ extended: true }))
+
+app.post('/api/board', async (req, res) => {
+  const boardSize = req.body['board-size']
+  if (!boardSize) return res.send('Error getting board size, no params')
   let rows, cols
 
   switch (boardSize) {
@@ -27,14 +31,38 @@ app.get('/api/board', (req, res) => {
       return res.status(400).send('Invalid board size selected')
   }
 
-  const colorPairs = generateColorPairs(rows, cols)
-  res.render('board', { rows, cols, colorPairs })
+  try {
+    const supabase = createClient(
+      process.env.SUPABASE_URL,
+      process.env.SUPABASE_KEY
+    )
+    const { data, error } = await supabase
+      .schema('games')
+      .from('boards')
+      .insert({ size: boardSize.split('x')[0] })
+      .select()
+
+    if (error) {
+      console.error('Supabase error:', error)
+      return res.send('Error creating board')
+    }
+
+    const boardId = data[0].id
+
+    const colorPairs = generateColorPairs(rows, cols)
+    res.render('board', { rows, cols, colorPairs, boardId })
+  } catch (error) {
+    return res.status(500).send('Error creating board')
+  }
 })
 
 app.get('/api/card/:index', (req, res) => {
   const index = parseInt(req.params.index, 10)
   const currentColor = req.query.color
   const colorActive = req.query.active === 'true' ? true : false
+
+  const boardId = req.query.boardId
+  console.log('👀 🔍 ~ app.get ~ boardId:', boardId)
 
   res.render('card', {
     index,
@@ -47,7 +75,6 @@ function generateColorPairs(rows, cols) {
   const totalCards = rows * cols
   const numPairs = totalCards / 2
 
-  // later this could be just colors in a DB; i.e. select * from colors order by random() limit totalCards
   const colors = [
     '#FF5733',
     '#33FF57',
@@ -84,10 +111,7 @@ function generateColorPairs(rows, cols) {
     '#FF9800',
   ]
 
-  // Select the required number of unique colors
   const selectedColors = colors.slice(0, numPairs)
-
-  // Create pairs of colors
   const colorPairs = [...selectedColors, ...selectedColors]
 
   return colorPairs.sort(() => Math.random() - 0.5)

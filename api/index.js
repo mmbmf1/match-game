@@ -6,7 +6,10 @@ import { createClient } from '@supabase/supabase-js'
 app.set('views', join(__dirname, '../views'))
 app.set('view engine', 'pug')
 
+app.use(express.json())
+
 app.post('/api/board', async (req, res) => {
+  console.log('👀 🔍 ~ app.post ~ req:', req.body)
   const boardSize = req.body['board-size']
   if (!boardSize) return res.send('Error getting board size')
   let rows, cols

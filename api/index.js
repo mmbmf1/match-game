@@ -57,8 +57,17 @@ app.get('/api/card/:index', (req, res) => {
   const index = parseInt(req.params.index, 10)
   const currentColor = req.query.color
   const colorActive = req.query.active === 'true' ? true : false
-  const boardId = req.query.boardId
-  console.log('👀 🔍 ~ app.get ~ boardId:', boardId)
+
+  // const boardId = req.query.boardId
+  // console.log('👀 🔍 ~ app.get ~ boardId:', boardId)
+
+  // workflow for card flip
+  // check the last turn for the passed boardId
+  // if there is not first card, add it to the first_card column in the turns table return to client: "select another card"
+  // if there is a first card, add the current card to the second_card column in the turns table
+  // check if first and second card are a match
+  // if match return to client: "cards matched" and disable the cards
+  // if not match return to client: "cards not matched" and flip the cards back over
 
   res.render('card', {
     index,

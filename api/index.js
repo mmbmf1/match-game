@@ -1,12 +1,13 @@
 import express from 'express'
 import { join } from 'path'
 const app = express()
+import { createClient } from '@supabase/supabase-js'
 
 app.set('views', join(__dirname, '../views'))
 app.set('view engine', 'pug')
 
-app.get('/api/board', (req, res) => {
-  const boardSize = req.query['board-size']
+app.post('/api/board', async (req, res) => {
+  const boardSize = req.body['board-size']
   if (!boardSize) return res.send('Error getting board size')
   let rows, cols
 
@@ -27,8 +28,29 @@ app.get('/api/board', (req, res) => {
       return res.status(400).send('Invalid board size selected')
   }
 
-  const colorPairs = generateColorPairs(rows, cols)
-  res.render('board', { rows, cols, colorPairs })
+  try {
+    const supabase = createClient(
+      process.env.SUPABASE_URL,
+      process.env.SUPABASE_KEY
+    )
+    const { data, error } = await supabase
+      .schema('games')
+      .from('boards')
+      .insert({ size: boardSize.split('x')[0] })
+      .select()
+
+    if (error) {
+      console.error('Supabase error:', error)
+      return res.send('Error creating board')
+    }
+
+    const boardId = data[0].id
+
+    const colorPairs = generateColorPairs(rows, cols)
+    res.render('board', { rows, cols, colorPairs, boardId })
+  } catch (error) {
+    return res.status(500).send('Error creating board')
+  }
 })
 
 app.get('/api/card/:index', (req, res) => {

@@ -7,12 +7,9 @@ const app = express()
 app.set('views', join(__dirname, '../views'))
 app.set('view engine', 'pug')
 
-// Use express.urlencoded() middleware
 app.use(express.urlencoded({ extended: true }))
 
 app.post('/api/board', async (req, res) => {
-  console.log('Parsed Body:', req.body) // Log the parsed body
-
   const boardSize = req.body['board-size']
   if (!boardSize) return res.send('Error getting board size, no params')
   let rows, cols

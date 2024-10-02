@@ -9,14 +9,6 @@ app.set('view engine', 'pug')
 app.use(express.json())
 
 app.post('/api/board', async (req, res) => {
-  console.log('Request received:')
-  console.log('Method:', req.method)
-  console.log('Headers:', req.headers)
-  console.log('Raw body:', req.rawBody)
-  console.log('Parsed body:', req.body)
-  console.log('Query:', req.query)
-  console.log('Params:', req.params)
-
   const boardSize = req.body['board-size']
   if (!boardSize) return res.send('Error getting board size, no params')
   let rows, cols

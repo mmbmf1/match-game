@@ -57,6 +57,8 @@ app.get('/api/card/:index', (req, res) => {
   const index = parseInt(req.params.index, 10)
   const currentColor = req.query.color
   const colorActive = req.query.active === 'true' ? true : false
+  const boardId = req.query.boardId
+  console.log('👀 🔍 ~ app.get ~ boardId:', boardId)
 
   res.render('card', {
     index,

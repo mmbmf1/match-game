@@ -58,69 +58,61 @@ app.post('/api/board', async (req, res) => {
 })
 
 app.get('/api/card/:index', async (req, res) => {
+  let match = false
   const index = parseInt(req.params.index, 10)
   const currentColor = req.query.color
   const colorActive = req.query.active === 'true' ? true : false
-
   const boardId = req.query.boardId
 
-  console.log('👀 🔍 ~ app.get ~ boardId:', boardId)
-  console.log('👀 🔍 ~ app.get ~ index:', index)
-  console.log('👀 🔍 ~ app.get ~ currentColor:', currentColor)
-
-  const { data: turns, error } = await supabase
-    .schema('games')
-    .from('turns')
-    .select()
-    .eq('board_id', boardId)
-    .order('created_at', { ascending: false })
-  if (error) console.log('👀 🔍 ~ app.get ~ error:', error)
-  console.log('👀 🔍 ~ app.get ~ data:', turns)
-
-  // first turn
-  if (
-    !turns.length ||
-    (turns[0].first_card_index && turns[0].second_card_index)
-  ) {
-    const { data: firstTurn, error } = await supabase
+  if (colorActive) {
+    const { data: turns, error } = await supabase
       .schema('games')
       .from('turns')
-      .insert({
-        board_id: boardId,
-        first_card_index: index,
-        first_card_color: currentColor,
-      })
       .select()
+      .eq('board_id', boardId)
+      .order('created_at', { ascending: false })
     if (error) console.log('👀 🔍 ~ app.get ~ error:', error)
-    console.log('👀 🔍 ~ app.get ~ data:', firstTurn)
-  }
 
-  // second turn
-  let match = false
-  if (turns.length && !turns[0].second_card_index) {
-    console.log('second turn')
+    // first turn
+    if (
+      !turns?.length ||
+      (turns[0].first_card_index && turns[0].second_card_index)
+    ) {
+      const { data: firstTurn, error } = await supabase
+        .schema('games')
+        .from('turns')
+        .insert({
+          board_id: boardId,
+          first_card_index: index,
+          first_card_color: currentColor,
+        })
+        .select()
+      if (error) console.log('👀 🔍 ~ app.get ~ error:', error)
+    } else if (!turns[0].second_card_index) {
+      // second turn
+      if (turns[0].first_card_index !== index) {
+        const { data: secondTurn, error } = await supabase
+          .schema('games')
+          .from('turns')
+          .update({ second_card_index: index, second_card_color: currentColor })
+          .eq('id', turns[0].id)
+          .select()
+        if (error) console.log('👀 🔍 ~ app.get ~ error:', error)
 
-    console.log(index, currentColor, turns[0].id)
-    const { data: secondTurn, error } = await supabase
-      .schema('games')
-      .from('turns')
-      .update({ second_card_index: index, second_card_color: currentColor })
-      .eq('id', turns[0].id)
-      .select()
-    if (error) console.log('👀 🔍 ~ app.get ~ error:', error)
-    console.log('👀 🔍 ~ app.get ~ secondTurn:', secondTurn)
-
-    if (secondTurn[0].first_card_color === secondTurn[0].second_card_color) {
-      match = secondTurn[0]
+        if (
+          secondTurn[0].first_card_color === secondTurn[0].second_card_color
+        ) {
+          match = secondTurn[0]
+        }
+      }
     }
   }
-
-  console.log('👀 🔍 ~ app.get ~ match:', match)
 
   res.render('card', {
     index,
     color: currentColor,
     colorActive,
+    boardId,
     match,
   })
 })

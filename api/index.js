@@ -7,7 +7,7 @@ const app = express()
 app.set('views', join(__dirname, '../views'))
 app.set('view engine', 'pug')
 
-// app.use(express.urlencoded({ extended: true }))
+app.use(express.urlencoded({ extended: true }))
 
 const supabase = createClient(
   process.env.SUPABASE_URL,
